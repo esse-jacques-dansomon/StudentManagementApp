@@ -1,0 +1,34 @@
+name: school_managment
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+
+flutter:
+  fonts:
+    - family: FuturaPT
+      fonts:
+        - asset: assets/fonts/FuturaPT-Heavy.ttf
+        - asset: assets/fonts/FuturaPT-Light.ttf
+        - asset: assets/fonts/FuturaPT-Medium.ttf
+    - family: Stalker
+      fonts:
+       - asset: assets/fonts/stalker.ttf
+  assets:
+    - assets/icons/
+    - assets/images/
+  uses-material-design: true
