@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:school_managment/config/app_colors.dart';
 import 'package:school_managment/ui/pages/home/widgets/Title_widget.dart';
+import 'package:school_managment/ui/pages/home/widgets/course_card.dart';
 import 'package:school_managment/ui/pages/home/widgets/serviceWidget.dart';
+import 'package:school_managment/ui/pages/home/widgets/session_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -110,8 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-
                       children: [
                         const SizedBox(
                           height: 60,
@@ -128,13 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              'Bruno',
+                              'Esse Jacques',
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white),
                             ),
-                            const SizedBox(height: 5),
+                            // const SizedBox(height: 5),
                             const Text(
                               '5th grade | AE5156478955',
                               style: TextStyle(
@@ -152,8 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  width: 50,
-                                  height: 20,
+                                  width: 70,
+                                  height: 25,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: Colors.green,
@@ -163,27 +163,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(width: 20,),
                                 Container(
-                                  width: 50,
-                                  height: 20,
+                                  width: 70,
+                                  height: 25,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: Colors.white,
                                   ),
                                   child: const Center(child: Text("Out", style: TextStyle(),)),
-
                                 ),
-
                               ],
                             )
                           ],
                         ),
                         const SizedBox(width: 10),
-
-
                       ])),
 
               const SectionTitleWidget(title: "Explore Services"),
-
 
               SizedBox(
                 height: 250,
@@ -193,10 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisCount: 4, // number of items in each row
                     mainAxisSpacing: 16.0, // spacing between rows
                     crossAxisSpacing: 16.0,
-                    mainAxisExtent: 120
+                    mainAxisExtent: 130
                     // spacing between columns
                   ),
-                  padding: const EdgeInsets.all(8.0), // padding around the grid
+                  padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8), // padding around the grid
                   itemCount:services.length, // total number of items
                   itemBuilder: (context, index) {
                     return  ServiceWidget(
@@ -216,62 +211,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    height: 80,
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.only(bottom: 7, top: 7),
-                    child: Row(
-                      
-                      children: [
-                        SizedBox(width: 10,),
-                        Container(
-                          height: 50,
-                          width: 60,
-                          child: Placeholder(),
-                        ),
-                        SizedBox(width: 20,),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                               services[index]['title'].toString(),
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                '5th grade | AE5156478955',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey),
-                              ),
-                            ]),
-                        ),
-                     
-                        Text(
-                          '25 May',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black),
-                        ),
-                        SizedBox(width: 15,),
-
-                      ],
-                    ),
+                  return CourseCard(
+                    title: services[index]['title'].toString(),
+                    subtitle: 'CDSD - Digital Campus',
+                    date: '25 May',
                   );
                 },
               ),
-
-              //schedule card here with schedule details : date, time, subject, class, teacher
-
+              const SectionTitleWidget(title: "Courses in Progress"),
+              ListView.builder(
+                itemCount: services.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return CourseCard(
+                    title: services[index]['title'].toString(),
+                    subtitle: 'CDSD - Digital Campus',
+                    date: '25 May',
+                  );
+                },
+              ),
+              const SectionTitleWidget(title: "Daily class sessions"),
+              ListView.builder(
+                itemCount: services.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return SessionCard(
+                    title: services[index]['title'].toString(),
+                    subtitle: 'CDSD - Digital Campus',
+                    date: '25 May',
+                  );
+                },
+              ),
             ],
           ),
         ),
