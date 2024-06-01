@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:school_managment/blocs/course/course_bloc.dart';
+import 'package:school_managment/blocs/session/session_bloc.dart';
 import 'package:school_managment/route/app_routes.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+    final  courseBlocProvider= BlocProvider.of<CourseBloc>(context);
+    final  sessionBlocProvider = BlocProvider.of<SessionBloc>(context);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -35,6 +42,9 @@ class SplashScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  sessionBlocProvider.add(const GetClassRoomTodaySessions(classRoomId: 1));
+                  courseBlocProvider.add(const GetClassroomCoursesEvent(classroomId: 1));
+                  courseBlocProvider.add(const GetClassroomCoursesByStatusEvent(classroomId: 1, status: "PLANNED"));
                   AppRoutes.offAllAndGoTo(context, routeName: AppRoutes.home);
                 },
                 style: ButtonStyle(

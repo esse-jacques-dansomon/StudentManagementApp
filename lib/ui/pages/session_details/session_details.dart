@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:school_managment/config/app_colors.dart';
-import 'package:school_managment/ui/pages/home/widgets/course_card.dart';
+import 'package:school_managment/ui/components/course_card.dart';
 
-import '../home/widgets/session_card.dart';
+import '../../components/session_card.dart';
 
 class SessionDetailsScreen extends StatefulWidget {
   const SessionDetailsScreen({super.key});
