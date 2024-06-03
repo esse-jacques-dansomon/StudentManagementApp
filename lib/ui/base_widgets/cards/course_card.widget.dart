@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:school_managment/config/app_colors.dart';
-import 'package:school_managment/route/app_routes.dart';
+import 'package:school_managment/data/models/course.model.dart';
 
-class SessionCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String date;
-  const SessionCard({super.key, required this.title, required this.subtitle, required this.date});
+class CourseCard extends StatelessWidget {
+  final Course course;
+  const CourseCard({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +19,13 @@ class SessionCard extends StatelessWidget {
 
         children: [
           const SizedBox(width: 10,),
-          const SizedBox(
+           SizedBox(
             height: 50,
             width: 60,
-            child: Placeholder(),
-          ),
+              child: Image(
+              image: NetworkImage(course.icon),
+                fit: BoxFit.cover,
+          ),),
           const SizedBox(width: 20,),
           Expanded(
             child: Column(
@@ -34,14 +33,14 @@ class SessionCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    title,
+                    course.module,
                     style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,
                         color: Colors.black),
                   ),
                   Text(
-                  subtitle,
+                  course.professor,
                     style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey),
@@ -49,28 +48,13 @@ class SessionCard extends StatelessWidget {
                 ]),
           ),
 
-          Container(
-            width: 70,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.PRIMARY,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child:  Center(
-              child: TextButton(
-                onPressed: () {
-                  AppRoutes.navigateTo(context, routeName: AppRoutes.sessionDetails);
-                },
-                child: const Text(
-                  "View",
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)
-              ),
-              ),
-            ),
-          ),
+          // Text(
+          //   course.,
+          //   style: const TextStyle(
+          //       fontSize: 14,
+          //       fontWeight: FontWeight.w400,
+          //       color: Colors.black),
+          // ),
           const SizedBox(width: 15,),
 
         ],

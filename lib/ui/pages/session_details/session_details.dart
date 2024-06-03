@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:school_managment/config/app_colors.dart';
-import 'package:school_managment/ui/components/course_card.dart';
+import 'package:school_managment/data/models/course.model.dart';
+import 'package:school_managment/ui/base_widgets/cards/course_card.widget.dart';
 
-import '../../components/session_card.dart';
 
 class SessionDetailsScreen extends StatefulWidget {
   const SessionDetailsScreen({super.key});
@@ -112,9 +111,14 @@ class _CourseDetailsState extends State<SessionDetailsScreen> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return CourseCard(
-                  title: "Ux",
-                  subtitle: 'CDSD - Digital Campus',
-                  date: '1h30m30s',
+                  course: Course(
+                      status: "Panned",
+                      professor: "Proffessor",
+                      icon: "https://placehold.co/600x400/png" ,
+                      module: "model",
+                      id: index
+                  ),
+
                 );
               },
             ),

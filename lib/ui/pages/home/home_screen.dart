@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:school_managment/blocs/course/course_bloc.dart';
 import 'package:school_managment/blocs/session/session_bloc.dart';
 import 'package:school_managment/config/app_colors.dart';
-import 'package:school_managment/ui/components/Title_widget.dart';
-import 'package:school_managment/ui/components/course_card.dart';
-import 'package:school_managment/ui/components/serviceWidget.dart';
-import 'package:school_managment/ui/components/session_card.dart';
+import 'package:school_managment/ui/base_widgets/cards/title.widget.dart';
+import 'package:school_managment/ui/base_widgets/cards/course_card.widget.dart';
+import 'package:school_managment/ui/base_widgets/cards/service_card.widget.dart';
+import 'package:school_managment/ui/base_widgets/cards/session_card.widget.dart';
+import 'package:school_managment/ui/base_widgets/shimmer/course_card_shimmer.dart';
+
+import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final  courseBlocProvider= BlocProvider.of<CourseBloc>(context);
+    final  homeBlocProvider= BlocProvider.of<HomeBloc>(context);
     final  sessionBlocProvider = BlocProvider.of<SessionBloc>(context);
 
     return Scaffold(
@@ -112,8 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: RefreshIndicator(
           onRefresh: ( ) async{
             sessionBlocProvider.add(const GetClassRoomTodaySessions(classRoomId: 1));
-            courseBlocProvider.add( const GetClassroomCoursesByStatusEvent(classroomId: 1, status: "PLANNED"));
-            courseBlocProvider.add( const GetClassroomCoursesEvent(classroomId: 1));
+            homeBlocProvider.add( const HomeLoadData(classroomId: 1, status: "PLANNED"));
           },
           child: SingleChildScrollView(
             padding:
@@ -214,7 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ])),
 
                 const SectionTitleWidget(title: "Explore Services"),
-
                 SizedBox(
                   height: 250,
                   child: GridView.builder(
@@ -240,70 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 20),
-                const SectionTitleWidget(title: "Courses of the Years"),
-
-                BlocBuilder<CourseBloc, CourseState>(
-                  builder: (context, state) {
-                    if(state is ClassroomCoursesLoading){
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if(state is ClassroomCoursesLoaded){
-                      return ListView.builder(
-                        itemCount:state.courses.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return CourseCard(
-                            title: state.courses[index].module,
-                            subtitle:  state.courses[index].professor,
-                            date: '25 May',
-                          );
-                        },
-                      );
-                    } else if (state is ClassroomCoursesError) {
-                      return Center(child: Text(state.message));
-                    }
-                    else {
-                      return const Center(
-                        child: Text("Course Loading"),
-                      );
-                    }
-                  },
-                ),
-
-
-                const SectionTitleWidget(title: "Courses in Progress"),
-                BlocBuilder<CourseBloc, CourseState>(
-                  builder: (context, state) {
-                   if(state is ClassroomCoursesByStatusLoading){
-                     return const Center(
-                       child: CircularProgressIndicator(),
-                     );
-                   } else if(state is ClassroomCoursesByStatusLoaded){
-                    return ListView.builder(
-                       itemCount: state.courses.length,
-                       shrinkWrap: true,
-                       physics: const NeverScrollableScrollPhysics(),
-                       itemBuilder: (context, index) {
-                         return CourseCard(
-                           title: state.courses[index].module,
-                           subtitle: state.courses[index].module,
-                           date: '25 May',
-                         );
-                       },
-                     );
-                   } else if (state is ClassroomCoursesByStatusError) {
-                     return Center(child: Text(state.message));
-                   }
-                   else {
-                     return const Center(
-                       child: Text("Course Loading"),
-                     );
-                   }
-                  },
-                ),
                 const SectionTitleWidget(title: "Daily class sessions"),
                 BlocBuilder<SessionBloc, SessionState>(
                   builder: (context, state) {
@@ -316,9 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return SessionCard(
-                            title: state.sessions[index].course.module,
-                            subtitle: 'CDSD - Digital Campus',
-                            date: '25 May',
+                            session: state.sessions[index],
                           );
                         },
                       );
@@ -329,6 +263,73 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                 ),
+                const SectionTitleWidget(title: "Courses of the Years"),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if(state is HomeDataLoading){
+                      return  ListView.builder(
+                        itemCount:3,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return const Column(
+                            children: [
+                              CourseCardShimmer(),
+
+                            ],
+                          );
+                        },
+                      );
+                    } else if(state is HomeDataLoaded){
+                      return ListView.builder(
+                        itemCount:state.courses.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return CourseCard(
+                           course: state.courses[index] ,
+                          );
+                        },
+                      );
+                    } else if (state is HomeDataError) {
+                      return Center(child: Text(state.message));
+                    }
+                    else {
+                      return const Center(
+                        child: Text("Course Loading"),
+                      );
+                    }
+                  },
+                ),
+                const SectionTitleWidget(title: "Courses in Progress"),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                   if(state is HomeDataLoading){
+                     return const Center(
+                       child: CircularProgressIndicator(),
+                     );
+                   } else if(state is HomeDataLoaded){
+                    return ListView.builder(
+                       itemCount: state.courses.length,
+                       shrinkWrap: true,
+                       physics: const NeverScrollableScrollPhysics(),
+                       itemBuilder: (context, index) {
+                         return CourseCard(
+                           course: state.courses[index],
+                         );
+                       },
+                     );
+                   } else if (state is HomeDataError) {
+                     return Center(child: Text(state.message));
+                   }
+                   else {
+                     return const Center(
+                       child: Text("Course Loading"),
+                     );
+                   }
+                  },
+                ),
+
               ],
             ),
           ),

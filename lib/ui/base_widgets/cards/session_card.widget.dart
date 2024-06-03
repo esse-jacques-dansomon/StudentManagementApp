@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:school_managment/config/app_colors.dart';
+import 'package:school_managment/data/models/session.model.dart';
+import 'package:school_managment/route/app_routes.dart';
 
-class CourseCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String date;
-  const CourseCard({super.key, required this.title, required this.subtitle, required this.date});
+class SessionCard extends StatelessWidget {
+  final Session session;
+  const SessionCard({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +21,13 @@ class CourseCard extends StatelessWidget {
 
         children: [
           const SizedBox(width: 10,),
-          const SizedBox(
+           SizedBox(
             height: 50,
             width: 60,
-            child: Placeholder(),
+            child: Image(
+              image: NetworkImage(session.course.icon),
+              fit: BoxFit.cover,
+            ),
           ),
           const SizedBox(width: 20,),
           Expanded(
@@ -32,14 +36,14 @@ class CourseCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    title,
+                    session.course.module,
                     style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,
                         color: Colors.black),
                   ),
                   Text(
-                  subtitle,
+                  session.course.professor,
                     style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey),
@@ -47,12 +51,27 @@ class CourseCard extends StatelessWidget {
                 ]),
           ),
 
-          Text(
-            date,
-            style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Colors.black),
+          Container(
+            width: 70,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.PRIMARY,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child:  Center(
+              child: TextButton(
+                onPressed: () {
+                  AppRoutes.navigateTo(context, routeName: AppRoutes.sessionDetails);
+                },
+                child: const Text(
+                  "View",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)
+              ),
+              ),
+            ),
           ),
           const SizedBox(width: 15,),
 

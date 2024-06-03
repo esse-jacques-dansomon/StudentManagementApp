@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:school_managment/ui/pages/auth/signin.screen.dart';
+import 'package:school_managment/ui/pages/auth/signup.screen.dart';
 import 'package:school_managment/ui/pages/chat_screen.dart';
 
 import '../ui/pages/home/home_screen.dart';
@@ -12,6 +14,8 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String chat = '/chat';
   static const String sessionDetails = '/session_details';
+  static const String signIn = '/sign_in';
+  static const String signUp = '/sign_up';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -19,6 +23,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
+      case signIn:
+        return MaterialPageRoute(builder: (_) => const SignInScreen());
+      case signUp:
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case chat:
         return MaterialPageRoute(builder: (_) => const ChatScreen());
       case sessionDetails:
