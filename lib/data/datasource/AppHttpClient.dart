@@ -58,6 +58,7 @@ class AppHttpClient {
       token = sharedPreferences.getString(AppConstants.TOKEN) ?? '';
 
       final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
+      print(url.toString());
       final response = await http.post(
         url,
         headers: _headers(),

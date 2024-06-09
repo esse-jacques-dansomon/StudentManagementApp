@@ -12,15 +12,18 @@ class AuthRepository {
   });
 
   Future<AuthResponse> login(AuthModel authModel) async {
-    final response = await httpClient.post(
-      '/login',
-      data: authModel.toJson()
-    );
 
     try {
+      final response = await httpClient.post(
+          '/auth/login',
+          data: authModel.toJson()
+      );
+
       if (response.statusCode == 200) {
-        return AuthResponse.fromJson(response as Map<String, dynamic>);
+        print(response.body);
+        return AuthResponse.fromJson(jsonDecode(response.body) as Map<String, dynamic> );
       } else {
+        print('NOT LOGIN ERROR');
         throw Exception('Failed to load classrooms');
       }
     } catch (e) {

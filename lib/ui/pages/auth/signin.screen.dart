@@ -12,8 +12,8 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     final formKey = GlobalKey<FormState>();
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+    final emailController = TextEditingController(text: "esse@example.com");
+    final passwordController = TextEditingController(text: "password");
 
 
     void sigIn() {
@@ -95,7 +95,7 @@ class SignInScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child:
-                          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                      BlocConsumer<AuthenticationBloc, AuthenticationState>(
                         builder: (context, state) {
                           if (state is AuthenticationInitial) {
                             return ElevatedButton(
@@ -120,16 +120,7 @@ class SignInScreen extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.white)),
                             );
-                            ;
-                          } else if (state is Authenticated) {
-                             Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen()));
 
-                            return Center(
-                                child: Text(
-                                    'Authenticated Token: ${state.token}'));
                           } else if (state is AuthenticationFailure) {
                             return ElevatedButton(
                               onPressed: () {
@@ -153,11 +144,43 @@ class SignInScreen extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.white)),
                             );
-                            ;
+                          } else if(state is AuthenticationLoading) {
+                            return ElevatedButton(
+                              onPressed: () {
+
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    AppColors.PRIMARY),
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.all(15)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                              child: const Text("Loading",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white)),
+                            );
                           } else {
                             return const SizedBox.shrink();
                           }
-                        },
+                        }, listener: (BuildContext context, AuthenticationState state) {
+                          if (state is AuthenticationFailure) {
+                            ScaffoldMessenger.of(context)
+                               .showSnackBar(SnackBar(content: Text(state.message)));
+                          }else if (state is Authenticated) {
+                            ScaffoldMessenger.of(context)
+                               .showSnackBar(SnackBar(content: Text(state.token)));
+
+                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+                             
+                          }
+
+                      },
                       ),
                     ),
                   ],
