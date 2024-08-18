@@ -16,8 +16,11 @@ class ClassRoom {
   });
 
   factory ClassRoom.fromJson(Map<String, dynamic> json) {
-    var coursesJson = json['courses'] as List;
-    List<Course> coursesList = coursesJson.map((courseJson) => Course.fromJson(courseJson)).toList();
+    List<Course> coursesList = [];
+    if (json.containsKey("courses")) {
+      var coursesJson = json['courses']  as List;
+      coursesList = coursesJson.map((courseJson) => Course.fromJson(courseJson)).toList();
+    }
 
     return ClassRoom(
       division: json['division'],
@@ -27,4 +30,13 @@ class ClassRoom {
       id: json['id'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "division": division,
+    "level": level,
+    "name": name,
+    "id": id,
+  };
 }
+
+

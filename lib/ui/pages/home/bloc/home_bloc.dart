@@ -3,14 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_managment/data/models/course.model.dart';
 import 'package:school_managment/data/repositories/course.repo.dart';
 
+import '../../../../utils/SecureStorage.dart';
+
 part 'home_event.dart';
 
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final CourseRepository courseRepository;
+  final SecureStorage secureStorage;
 
-  HomeBloc({required this.courseRepository}) : super(HomeInitial()) {
+
+  HomeBloc({required this.courseRepository, required this.secureStorage}) : super(HomeInitial()) {
     on<HomeLoadData>(_onHomeLoadData);
   }
 

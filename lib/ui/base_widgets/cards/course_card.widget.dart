@@ -9,14 +9,19 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 1,
+    )]
       ),
       height: 80,
       padding: const EdgeInsets.all(5),
       margin: const EdgeInsets.only(bottom: 7, top: 7),
       child: Row(
-
         children: [
           const SizedBox(width: 10,),
            SizedBox(
@@ -37,7 +42,7 @@ class CourseCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black),
+                    ),
                   ),
                   Text(
                   course.professor,

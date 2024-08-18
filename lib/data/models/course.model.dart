@@ -32,4 +32,5 @@ class Course {
       'id': id,
     };
   }
+
 }

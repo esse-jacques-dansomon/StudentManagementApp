@@ -8,7 +8,7 @@ class SectionTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 30),
+        const SizedBox(height: 20),
         Container(
             alignment: Alignment.centerLeft,
             child:  Text(title,

@@ -1,6 +1,7 @@
 class AppConstants {
   AppConstants._();
   static const String TOKEN = 'TOKEN';
+  static const String user = 'USER';
   static const String APP_NAME = 'SCOOL_MANAGMENT';
   // static const String BASE_URL = 'http://10.0.2.2:9090/api/v1';
   static const String BASE_URL = 'http://localhost:9090/api/v1';

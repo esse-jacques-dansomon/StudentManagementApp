@@ -2,51 +2,55 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../config/app_constantes.dart';
+import 'package:school_managment/ui/pages/auth/bloc/auth_bloc.dart';
+import '../../utils/SecureStorage.dart';
 
 class AppHttpClient {
   final String baseUrl;
-  final SharedPreferences sharedPreferences;
+  final SecureStorage secureStorage;
+  final AuthenticationBloc authBloc;
 
   String token = '';
-  String countryCode = '';
 
-  AppHttpClient({required this.baseUrl,required this.sharedPreferences}) {
-    token = sharedPreferences.getString(AppConstants.TOKEN) ?? '';
-    countryCode = sharedPreferences.getString(AppConstants.APP_NAME) ?? '';
+  AppHttpClient({
+    required this.baseUrl,
+    required this.secureStorage,
+    required this.authBloc,
+  });
+
+  Future<void> _updateToken() async {
+    token = await secureStorage.getToken() ?? '';
   }
 
-  void updateHeader(String countryCode) {
-    this.countryCode = countryCode;
+  Future<http.Response> _sendRequest(
+      Future<http.Response> Function() request) async {
+    try {
+      if (token.isNotEmpty) {
+        _headers()['Authorization'] = 'Bearer $token';
+        print("Token: " + token);
+
+      }
+      await _updateToken();
+      final response = await request();
+      _handleResponse(response);
+      return response;
+    } on SocketException {
+      throw SocketException('No Internet connection');
+    } on HttpException {
+      throw HttpException('HTTP error');
+    } on FormatException {
+      throw FormatException('Unable to process the data');
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<http.Response> get(
       String uri, {
         Map<String, dynamic>? queryParameters,
       }) async {
-    try {
-      token = sharedPreferences.getString(AppConstants.TOKEN) ?? '';
-
-      final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
-      print(url);
-      final response = await http.get(
-        url,
-        headers: _headers(),
-      );
-      _handleResponse(response);
-      return response;
-    } on SocketException catch (e) {
-      print(e.toString());
-      throw SocketException(e.toString());
-    } on FormatException catch (_) {
-      print("Error: ");
-      throw const FormatException("Unable to process the data");
-    } catch (e) {
-      print(e.toString());
-      rethrow;
-    }
+    final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
+    return _sendRequest(() => http.get(url, headers: _headers()));
   }
 
   Future<http.Response> post(
@@ -54,23 +58,8 @@ class AppHttpClient {
         dynamic data,
         Map<String, dynamic>? queryParameters,
       }) async {
-    try {
-      token = sharedPreferences.getString(AppConstants.TOKEN) ?? '';
-
-      final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
-      print(url.toString());
-      final response = await http.post(
-        url,
-        headers: _headers(),
-        body: jsonEncode(data),
-      );
-      _handleResponse(response);
-      return response;
-    } on FormatException catch (_) {
-      throw const FormatException("Unable to process the data");
-    } catch (e) {
-      rethrow;
-    }
+    final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
+    return _sendRequest(() => http.post(url, headers: _headers(), body: jsonEncode(data)));
   }
 
   Future<http.Response> put(
@@ -78,22 +67,8 @@ class AppHttpClient {
         dynamic data,
         Map<String, dynamic>? queryParameters,
       }) async {
-    try {
-      token = sharedPreferences.getString(AppConstants.TOKEN) ?? '';
-
-      final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
-      final response = await http.put(
-        url,
-        headers: _headers(),
-        body: jsonEncode(data),
-      );
-      _handleResponse(response);
-      return response;
-    } on FormatException catch (_) {
-      throw const FormatException("Unable to process the data");
-    } catch (e) {
-      rethrow;
-    }
+    final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
+    return _sendRequest(() => http.put(url, headers: _headers(), body: jsonEncode(data)));
   }
 
   Future<http.Response> delete(
@@ -101,34 +76,24 @@ class AppHttpClient {
         dynamic data,
         Map<String, dynamic>? queryParameters,
       }) async {
-    try {
-      token = sharedPreferences.getString(AppConstants.TOKEN) ?? '';
-
-      final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
-      final response = await http.delete(
-        url,
-        headers: _headers(),
-        body: jsonEncode(data),
-      );
-      _handleResponse(response);
-      return response;
-    } on FormatException catch (_) {
-      throw const FormatException("Unable to process the data");
-    } catch (e) {
-      rethrow;
-    }
+    final url = Uri.parse('$baseUrl$uri').replace(queryParameters: queryParameters);
+    return _sendRequest(() => http.delete(url, headers: _headers(), body: jsonEncode(data)));
   }
 
   Map<String, String> _headers() {
     return {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
-      // 'Authorization': 'Bearer $token',
-      // AppConstants.COUNTRY_CODE: countryCode.toUpperCase(),
+      'Access-Control-Allow-Origin': '*',
     };
   }
 
   void _handleResponse(http.Response response) {
+    if (response.statusCode == 401) {
+      print("Authentication4940 ${response}");
+      authBloc.add(LoggedOut()); // Notify bloc of logout
+      throw const HttpException('Unauthorized request');
+    }
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw HttpException('Failed request with status code: ${response.statusCode}');
     }

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_managment/config/app_colors.dart';
-import 'package:school_managment/ui/pages/auth/bloc/auth_bloc.dart';
+import 'package:school_managment/ui/pages/auth/signin/bloc/login_bloc.dart';
 
-import '../home/home_screen.dart';
+import '../../home/home_screen.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final loginBloc = BlocProvider.of<LoginBloc>(context);
     final formKey = GlobalKey<FormState>();
     final emailController = TextEditingController(text: "esse@example.com");
     final passwordController = TextEditingController(text: "password");
@@ -19,9 +19,9 @@ class SignInScreen extends StatelessWidget {
     void sigIn() {
       if (formKey.currentState!.validate()) {
         formKey.currentState!.save();
-        authenticationBloc.add(
-          LoginRequested(
-            email: emailController.text,
+        loginBloc.add(
+          LoginButtonPressed(
+            username: emailController.text,
             password: passwordController.text,
           ),
         );
@@ -95,9 +95,9 @@ class SignInScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child:
-                      BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                      BlocConsumer<LoginBloc, LoginState>(
                         builder: (context, state) {
-                          if (state is AuthenticationInitial) {
+                          if (state is LoginInitial) {
                             return ElevatedButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
@@ -121,7 +121,8 @@ class SignInScreen extends StatelessWidget {
                                       fontSize: 18, color: Colors.white)),
                             );
 
-                          } else if (state is AuthenticationFailure) {
+                          }
+                          else if (state is LoginFailure) {
                             return ElevatedButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
@@ -144,7 +145,7 @@ class SignInScreen extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.white)),
                             );
-                          } else if(state is AuthenticationLoading) {
+                          } else if(state is LoginLoading) {
                             return ElevatedButton(
                               onPressed: () {
 
@@ -168,15 +169,15 @@ class SignInScreen extends StatelessWidget {
                           } else {
                             return const SizedBox.shrink();
                           }
-                        }, listener: (BuildContext context, AuthenticationState state) {
-                          if (state is AuthenticationFailure) {
+                        }, listener: (BuildContext context, LoginState state) {
+                          if (state is LoginFailure) {
                             ScaffoldMessenger.of(context)
-                               .showSnackBar(SnackBar(content: Text(state.message)));
-                          }else if (state is Authenticated) {
+                               .showSnackBar(SnackBar(content: Text(state.error)));
+                          }else if (state is LoginSuccess) {
                             ScaffoldMessenger.of(context)
-                               .showSnackBar(SnackBar(content: Text(state.token)));
+                               .showSnackBar(const SnackBar(content: Text("Successfully logged in")));
 
-                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+                             // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
                              
                           }
 

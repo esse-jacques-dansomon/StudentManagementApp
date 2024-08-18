@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:school_managment/data/repositories/session.repo.dart';
 
-import '../../data/models/session.model.dart';
-import '../../data/repositories/session.repo.dart';
+import '../../../../../data/models/session.model.dart';
 
 part 'session_event.dart';
 part 'session_state.dart';

@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:school_managment/ui/pages/auth/signin.screen.dart';
-import 'package:school_managment/ui/pages/auth/signup.screen.dart';
-import 'package:school_managment/ui/pages/chat_screen.dart';
+import 'package:school_managment/ui/pages/auth/signup/signup.screen.dart';
+import 'package:school_managment/ui/pages/chat/chat_screen.dart';
+import 'package:school_managment/ui/pages/splash/splash_screen.dart';
 
+import '../ui/pages/auth/signin/signin.screen.dart';
+import '../ui/pages/classes/classes.dart';
+import '../ui/pages/course_details/course_details_screen.dart';
 import '../ui/pages/home/home_screen.dart';
-import '../ui/pages/profile_screen.dart';
-import '../ui/pages/session_details/session_details.dart';
+import '../ui/pages/onboarding/on_boarding_screen.dart';
+import '../ui/pages/profil/profile_screen.dart';
 
 class AppRoutes {
   AppRoutes._();
 
+  static const String onboarding = '/Onboarding';
   static const String home = '/home';
   static const String profile = '/profile';
   static const String chat = '/chat';
+  static const String classes = '/bus';
   static const String sessionDetails = '/session_details';
   static const String signIn = '/sign_in';
   static const String signUp = '/sign_up';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case onboarding:
+        return MaterialPageRoute(builder: (_) =>  const Onboarding());
+        case home:
+        return MaterialPageRoute(builder: (_) =>  const HomeScreen());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case signIn:
@@ -29,15 +36,18 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case chat:
         return MaterialPageRoute(builder: (_) => const ChatScreen());
+        case classes:
+        return MaterialPageRoute(builder: (_) => const ClassesScreen());
       case sessionDetails:
-        return MaterialPageRoute(builder: (_) => const SessionDetailsScreen());
+        int courseId = settings.arguments as int ;
+        return MaterialPageRoute(builder: (_) =>  SessionDetailsScreen(courseId: courseId));
       default:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
   }
 
   /*
-  * This method will navigate to the routeName
+   * This method will navigate to the routeName
    */
   static void navigateTo(BuildContext context, {required String routeName}) {
     // Navigator.push(context, MaterialPageRoute(builder: (builder) => widget));
@@ -45,7 +55,15 @@ class AppRoutes {
   }
 
   /*
-  * This method will navigate to the routeName and remove all the previous routes
+   * This method navigate with arguments
+   */
+  static void navigateToWithArguments(BuildContext context,
+      {required String routeName, required dynamic arguments}) {
+    Navigator.pushNamed(context, routeName, arguments: arguments);
+  }
+
+  /*
+   * This method will navigate to the routeName and remove all the previous routes
    */
   static void ofAndNavigateTo(BuildContext context,
       {required String routeName}) {
@@ -55,7 +73,7 @@ class AppRoutes {
   }
 
   /*
-  * This method will navigate to the routeName and remove all the previous routes
+   * This method will navigate to the routeName and remove all the previous routes
    */
   static void offAndNavigateTo(BuildContext context,
       {required String routeName}) {
@@ -65,7 +83,7 @@ class AppRoutes {
   }
 
   /*
-  * This method will navigate to the routeName and remove all the previous routes
+   * This method will navigate to the routeName and remove all the previous routes
    */
   static void goTo(BuildContext context, {required String routeName}) {
     Navigator.pushNamed(context, routeName);
